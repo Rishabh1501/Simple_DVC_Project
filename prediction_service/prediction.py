@@ -85,18 +85,11 @@ def validate_input(dict_request):
 
 
 def form_response(dict_request):
-    try:
-        if validate_input(dict_request):
-            data = dict_request.values()
-            data = [list(map(float, data))]
-            response = predict(data)
-            return response
-
-    except Exception as e:
-        error = {'error': f"Values Entered are not in Range or Column Name is not found "
-                          f"correct, Error : {str(e)}",
-                 "Expected Range is ": loading_schema()}
-        return error
+    if validate_input(dict_request):
+        data = dict_request.values()
+        data = [list(map(float, data))]
+        response = predict(data)
+        return response
 
 
 def api_response(dict_request):
