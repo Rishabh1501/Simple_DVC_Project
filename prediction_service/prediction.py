@@ -63,12 +63,16 @@ def validate_input(dict_request):
         col = col.replace('_', ' ')
         if col in schema.keys():
             try:
-                if schema[col]["min"] <= val <= schema[col]['max']:
+                if schema[col]["min"] <= float(val) <= schema[col]['max']:
                     return True
                 else:
                     raise NotInRange
 
-            except TypeError:
+            except NotInRange as e:
+                print(e)
+                raise NotInRange
+
+            except ValueError as e:
                 raise WrongType
 
         else:
