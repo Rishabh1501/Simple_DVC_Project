@@ -63,7 +63,7 @@ def validate_input(dict_request):
         col = col.replace('_', ' ')
         if col in schema.keys():
             try:
-                if schema[col]["min"] <= float(val) <= schema[col]['max']:
+                if schema[col]["min"] <= val <= schema[col]['max']:
                     return True
                 else:
                     raise NotInRange
@@ -95,10 +95,22 @@ def form_response(dict_request):
 def api_response(dict_request):
     try:
         if validate_input(dict_request):
-            data = np.array([list(dict_request.json.values())])
+            data = np.array([list(dict_request.values())])
             response = predict(data)
             response = {"response": response}
             return response
+
+    except NotInRange as e:
+        response = {"the_expected_range": loading_schema(), "response": str(e)}
+        return response
+
+    except NotInCols as e:
+        response = {"the_expected_cols": loading_schema().keys(), "response": str(e)}
+        return response
+
+    except WrongType as e:
+        response = {"the_expected_type": "int or float", "response": str(e)}
+        return response
 
     except Exception as e:
         error = {'error': f"Values Entered are not in Range or Column Name is not found "
